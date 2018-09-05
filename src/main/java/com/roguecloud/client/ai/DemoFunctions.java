@@ -1,4 +1,5 @@
 package com.roguecloud.client.ai;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -37,7 +38,7 @@ import com.roguecloud.map.Tile;
 import com.roguecloud.utils.AIUtils;
 import com.roguecloud.utils.AStarSearch;
 import com.roguecloud.utils.FastPathSearch;
-public class DemoFunctions{
+public class DemoFunctions {
     /** 
 	 * This method is given the list of ALL items on the ground in your current view, and is asked, do you want to pick any of these up?
 	 * If you see an item in the list that you want to pick up, return the IGroundObject that contains it!
