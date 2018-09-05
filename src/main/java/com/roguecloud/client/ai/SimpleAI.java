@@ -92,29 +92,29 @@ public class SimpleAI extends RemoteClient {
 		// Be careful, some objects might be guarded by monsters! 
 		// You can see monsters by calling AIUtils.findCreaturesInRange(...).
 
-		// Default behaviour: pick up the first thing I see...
-		for(IGroundObject visibleGroundObjectContainer : allVisibleGroundObjects) {
-			IObject objectOnGround = visibleGroundObjectContainer.get();
+        // Default behaviour: pick up nothing
+        return null;
+        
+		// for(IGroundObject visibleGroundObjectContainer : allVisibleGroundObjects) {
+		// 	IObject objectOnGround = visibleGroundObjectContainer.get();
 			
-			if(objectOnGround.getObjectType() == ObjectType.ARMOUR) {
-				Armour a = (Armour)objectOnGround;
+		// 	if(objectOnGround.getObjectType() == ObjectType.ARMOUR) {
+		// 		Armour a = (Armour)objectOnGround;
 				
-				return visibleGroundObjectContainer;
+		// 		return visibleGroundObjectContainer;
 				
-			} else if(objectOnGround.getObjectType() == ObjectType.WEAPON) {
-				Weapon w = (Weapon)objectOnGround;
+		// 	} else if(objectOnGround.getObjectType() == ObjectType.WEAPON) {
+		// 		Weapon w = (Weapon)objectOnGround;
 				
-				return visibleGroundObjectContainer;
+		// 		return visibleGroundObjectContainer;
 				
-			} else if(objectOnGround.getObjectType() == ObjectType.ITEM) {
-				DrinkableItem i = (DrinkableItem)objectOnGround;
+		// 	} else if(objectOnGround.getObjectType() == ObjectType.ITEM) {
+		// 		DrinkableItem i = (DrinkableItem)objectOnGround;
 				
-				return visibleGroundObjectContainer;
-			}
+		// 		return visibleGroundObjectContainer;
+		// 	}
 			
-		}
-		
-		return null;
+		// }
 	}
 	
 	/** While your character is wandering around the world, it will see other monsters, which it may optionally attack.
@@ -128,18 +128,8 @@ public class SimpleAI extends RemoteClient {
 		WorldState worldState = getWorldState();
 		
 		ICreature creatureToAttack = null;
-		
-		// Default behaviour: Attack the first creature that I see.
-		for(ICreature c : visibleMonsters) {
-			
-			int creatureLevel = c.getLevel();
-			
-			if(creatureToAttack == null) {
-				creatureToAttack = c;
-			}
-		}
-		
-		return creatureToAttack;
+        // Default behaviour: Attack nothing
+		return null;
 		
 	}
 	
@@ -222,6 +212,7 @@ public class SimpleAI extends RemoteClient {
 	 * 
 	 **/
 	public boolean shouldIEquipNewItem(IObject newItem) {
+        // Default behavior: Equip any armor we pickup
 		ICreature me = getSelfState().getPlayer();
 		
 		if(newItem.getObjectType() == ObjectType.ARMOUR) {
@@ -236,18 +227,19 @@ public class SimpleAI extends RemoteClient {
 			return true;
 			
 			
-		} else if(newItem.getObjectType() == ObjectType.WEAPON) {
-			Weapon w = (Weapon) newItem;
+		} 
+        // else if(newItem.getObjectType() == ObjectType.WEAPON) {
+		// 	Weapon w = (Weapon) newItem;
 			
-			Weapon previouslyEquipped = me.getWeapon();
-			if(previouslyEquipped != null) {
-				// Put your own logic here... compare what you have equipped with what you just picked up!
-			}
+		// 	Weapon previouslyEquipped = me.getWeapon();
+		// 	if(previouslyEquipped != null) {
+		// 		// Put your own logic here... compare what you have equipped with what you just picked up!
+		// 	}
 
-			// Default behaviour: Always equip everything we pick up
-			return true;
+		// 	// Default behaviour: Always equip everything we pick up
+		// 	return true;
 
-		}
+		// }
 		
 		return false;
 	}
@@ -266,16 +258,6 @@ public class SimpleAI extends RemoteClient {
 		WorldState worldState = getWorldState();
 		
 		Collections.shuffle(creaturesAttackingUs);
-		
-		for(ICreature c : creaturesAttackingUs) {
-			
-			int monsterLevel = c.getLevel();
-			
-			// Default behaviour: Attack the first creature in the list, after shuffling the list 
-			return c;
-			
-		}
-
 		return null;
 	}
 	
