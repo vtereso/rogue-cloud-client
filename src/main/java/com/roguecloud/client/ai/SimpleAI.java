@@ -84,37 +84,7 @@ public class SimpleAI extends RemoteClient {
 	 * If you see an item in the list that you want to pick up, return the IGroundObject that contains it!
 	 **/
 	public IGroundObject shouldIPickUpItem(List<IGroundObject> allVisibleGroundObjects) {
-
-		SelfState selfState = getSelfState();
-		WorldState worldState = getWorldState();
-
-		// Look at all the objects the agent can see, and decide which, if any, they should go and pick up.
-		// Be careful, some objects might be guarded by monsters! 
-		// You can see monsters by calling AIUtils.findCreaturesInRange(...).
-
-        // Default behaviour: pick up nothing
-        return null;
-        
-		// for(IGroundObject visibleGroundObjectContainer : allVisibleGroundObjects) {
-		// 	IObject objectOnGround = visibleGroundObjectContainer.get();
-			
-		// 	if(objectOnGround.getObjectType() == ObjectType.ARMOUR) {
-		// 		Armour a = (Armour)objectOnGround;
-				
-		// 		return visibleGroundObjectContainer;
-				
-		// 	} else if(objectOnGround.getObjectType() == ObjectType.WEAPON) {
-		// 		Weapon w = (Weapon)objectOnGround;
-				
-		// 		return visibleGroundObjectContainer;
-				
-		// 	} else if(objectOnGround.getObjectType() == ObjectType.ITEM) {
-		// 		DrinkableItem i = (DrinkableItem)objectOnGround;
-				
-		// 		return visibleGroundObjectContainer;
-		// 	}
-			
-		// }
+        return DemoFunctions.shouldIPickUpItem(this,allVisibleGroundObjects);
 	}
 	
 	/** While your character is wandering around the world, it will see other monsters, which it may optionally attack.
@@ -123,14 +93,7 @@ public class SimpleAI extends RemoteClient {
 	 * attack one of them, return the creature object you wish to attack. 
 	 **/
 	public ICreature shouldIAttackCreature(List<ICreature> visibleMonsters) {
-		
-		SelfState selfState = getSelfState();
-		WorldState worldState = getWorldState();
-		
-		ICreature creatureToAttack = null;
-        // Default behaviour: Attack nothing
-		return null;
-		
+		return DemoFunctions.shouldIAttackCreature(this,visibleMonsters);
 	}
 	
 
@@ -139,40 +102,7 @@ public class SimpleAI extends RemoteClient {
 	 * this method. The coordinate on the map you pick is the coordinate that the code will move to.
 	 */
 	public Position whereShouldIGo() {
-
-		SelfState selfState = getSelfState();
-		WorldState worldState = getWorldState();
-		
-		IMap whatWeHaveSeenMap = worldState.getMap();
-		
-		int x1;
-		int y1;
-		int x2;
-		int y2;
-
-		boolean randomPositionInView = false; 
-		if(randomPositionInView) {
-			x1 = worldState.getViewXPos();
-			y1 = worldState.getViewYPos();
-			x2 = worldState.getViewXPos() + worldState.getViewWidth()-1;
-			y2 = worldState.getViewYPos() + worldState.getViewHeight()-1;			
-		} else {
-			x1 = 0;
-			y1 = 0;
-			x2 = worldState.getWorldWidth();
-			y2 = worldState.getWorldHeight();
-		}
-		
-		// Default behaviour: Pick a random spot in the world and go there.
-		Position p  = AIUtils.findRandomPositionOnMap(x1, y1, x2, y2, !randomPositionInView, whatWeHaveSeenMap);
-		
-		System.out.println("Going to "+p);
-		if(p != null) {
-			return p;
-		}
-		
-		return null;
-		
+        return DemoFunctions.whereShouldIGo(this);
 	}
 
 	/** Each turn, we call this method to ask if you character should drink a potion (and which one it should drink). 
@@ -181,29 +111,7 @@ public class SimpleAI extends RemoteClient {
 	 * To drink no potions this turn, return null. 
 	 **/
 	public OwnableObject shouldIDrinkAPotion() {
-		
-		ICreature me = getSelfState().getPlayer();
-		WorldState worldState = getWorldState();
-		List<OwnableObject> ourInventory = selfState.getPlayer().getInventory();
-
-		int percentHealthLeft = (int)(100d * (double)me.getHp() / (double)me.getMaxHp()); 
-
-		// Default behaviour: if our health is less than 50, then drink the first potion 
-		// in our inventory (but it might not be helpful in this situation!) 
-
-		if(percentHealthLeft < 50) {
-			
-			for(OwnableObject oo : ourInventory) {
-				IObject obj = oo.getContainedObject();
-				if(obj.getObjectType() == ObjectType.ITEM) {
-					DrinkableItem potion = (DrinkableItem)obj;
-					return oo;
-				}
-			}			
-		}
-		
-		// Otherwise drink no potions
-		return null;
+		return DemoFunctions.shouldIDrinkAPotion(this);
 	}
 	
 	/** When your character picks up a new item (weapon or armour), they have a choice on whether or not to equip it.
@@ -212,36 +120,7 @@ public class SimpleAI extends RemoteClient {
 	 * 
 	 **/
 	public boolean shouldIEquipNewItem(IObject newItem) {
-        // Default behavior: Equip any armor we pickup
-		ICreature me = getSelfState().getPlayer();
-		
-		if(newItem.getObjectType() == ObjectType.ARMOUR) {
-			Armour a = (Armour) newItem;			
-			
-			Armour previouslyEquipped = me.getArmour().get(a.getType());
-			if(previouslyEquipped != null) {
-				// Put your own logic here... compare what you have equipped with what you just picked up!
-			}
-			
-			// Default behaviour: Always equip everything we pick up
-			return true;
-			
-			
-		} 
-        // else if(newItem.getObjectType() == ObjectType.WEAPON) {
-		// 	Weapon w = (Weapon) newItem;
-			
-		// 	Weapon previouslyEquipped = me.getWeapon();
-		// 	if(previouslyEquipped != null) {
-		// 		// Put your own logic here... compare what you have equipped with what you just picked up!
-		// 	}
-
-		// 	// Default behaviour: Always equip everything we pick up
-		// 	return true;
-
-		// }
-		
-		return false;
+        return DemoFunctions.shouldIEquipNewItem(this,newItem);
 	}
 	
 	/** If a creature is attacking us (and we did not initiate the combat through the shouldIAttackCreature method), we 
@@ -253,12 +132,7 @@ public class SimpleAI extends RemoteClient {
 	 * If you wish to attack back, return a creature from the list, otherwise return null.
 	 **/
 	public ICreature unprovokedAttackShouldIAttackBack(List<ICreature> creaturesAttackingUs) {
-		
-		ICreature me = getSelfState().getPlayer();
-		WorldState worldState = getWorldState();
-		
-		Collections.shuffle(creaturesAttackingUs);
-		return null;
+		return DemoFunctions.unprovokedAttackShouldIAttackBack(this,creaturesAttackingUs);
 	}
 	
 	// ------------------------------- ( Agent implementation) ------------------------------------------------------------
