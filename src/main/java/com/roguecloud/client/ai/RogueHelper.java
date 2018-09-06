@@ -43,10 +43,11 @@ public class RogueHelper {
 
     // Grabs the first health potion within list of visible ground objects
     // CAN BE USED WITHIN shouldIPickUpItem function
-    public IGroundObject grabHealthPotion (List<IGroundObject> allVisibleGroundObjects) {
+    public static IGroundObject grabHealthPotion (SimpleAI client, List<IGroundObject> allVisibleGroundObjects) {
         IGroundObject bestPotion=null;
         for(IGroundObject visibleGroundObjectContainer : allVisibleGroundObjects) {
-            if(objectOnGround.getObjectType() == ObjectType.ITEM && ) {
+            IObject objectOnGround=(IObject)visibleGroundObjectContainer.get();
+            if(objectOnGround.getObjectType() == ObjectType.ITEM) {
                 DrinkableItem pot = (DrinkableItem)objectOnGround;
                 if(pot.getEffect().getType().getPositiveEffect() == "Healing"){
                     //Is this really the best potion?? 
@@ -64,8 +65,8 @@ public class RogueHelper {
     //  Significance is determined by the point system
     // CAN BE USED WITHIN unprovokedAttackShouldIAttackBack function 
     // CAN BE USED WITHIN shouldIAttackCreature function
-    public int isGoodFight(ICreature c) {
-        ICreature player = getSelfState().getPlayer();
+    public static int isGoodFight(SimpleAI client, ICreature c) {
+        ICreature player = client.getSelfState().getPlayer();
         Weapon myWeapon = player.getWeapon();
         int myWeaponRating = (myWeapon == null) ? 0 : myWeapon.calculateWeaponRating()*10;
         int myTotalArmour=0;
@@ -89,8 +90,8 @@ public class RogueHelper {
     //  Return the best equippable of the list
     //  Significance determined by the point system
     // CAN BE USED WITHIN shouldIPickUpItem function
-    public IGroundObject grabBestEquip (List<IGroundObject> allVisibleGroundObjects) {
-        ICreature player = selfState.getPlayer();
+    public static IGroundObject grabBestEquip (SimpleAI client, List<IGroundObject> allVisibleGroundObjects) {
+        ICreature player = client.getSelfState().getPlayer();
 
         IGroundObject bestEquip=null;
         int e_rating=0;
@@ -117,10 +118,10 @@ public class RogueHelper {
                 Weapon w = (Weapon)objectOnGround;
                 Weapon currentWeapon = player.getWeapon();
                 int rating_diff=(w.calculateWeaponRating() - ((currentWeapon == null) ? 0 : currentWeapon.calculateWeaponRating()))*10;
-                if(player.getArmour().get(ArmourType.SHIELD) != null && w.getType() == WeaponType.TWO_HANDED){
-                        rating_diff-=(player.getArmour().get(ArmourType.SHIELD).getDefense()*100);
+                if(player.getArmour().get(Armour.ArmourType.SHIELD) != null && w.getType() == Weapon.WeaponType.TWO_HANDED){
+                        rating_diff-=(player.getArmour().get(Armour.ArmourType.SHIELD).getDefense()*100);
                 }
-                if (rating_diff > w_rating){
+                if (rating_diff > e_rating){
                         bestEquip = visibleGroundObjectContainer;
                         e_rating=rating_diff;
                 }
@@ -133,8 +134,8 @@ public class RogueHelper {
     // E.g. too many creatures might influence your decision 
     // CAN BE USED WITHIN unprovokedAttackShouldIAttackBack function 
     // CAN BE USED WITHIN shouldIAttackCreature function
-    public boolean shouldFight(List<ICreature> visibleMonsters) {
-        ICreature player = getSelfState().getPlayer();
+    public static boolean shouldFight(SimpleAI client, List<ICreature> visibleMonsters) {
+        ICreature player = client.getSelfState().getPlayer();
 
         // If this drops below zero, do not fight
         int allowances=10;
@@ -160,12 +161,12 @@ public class RogueHelper {
     // Grab the first two handed weapon you see
     // Null otherwise
     // CAN BE USED WITHIN shouldIPickUpItem function
-    public IGroundObject grabTwoHanded (List<IGroundObject> allVisibleGroundObjects) {
+    public static IGroundObject grabTwoHanded (SimpleAI client, List<IGroundObject> allVisibleGroundObjects) {
         for(IGroundObject visibleGroundObjectContainer : allVisibleGroundObjects) {
             IObject objectOnGround = visibleGroundObjectContainer.get();
             if(objectOnGround.getObjectType() == ObjectType.WEAPON) {
                 Weapon w = (Weapon)objectOnGround;
-                if(w.getType() == WeaponType.TWO_HANDED){
+                if(w.getType() == Weapon.WeaponType.TWO_HANDED){
                     return visibleGroundObjectContainer;
                 }
             }
